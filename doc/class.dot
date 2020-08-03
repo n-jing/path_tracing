@@ -1,0 +1,113 @@
+digraph class_diagram
+{
+  node[style=filled, shape=record];
+  Camera[label="{Camera\l|
+    <get_view_beam>+ get_view_beam()\l|
+    <add_pixel>+ add_pixel()\l|
+    + GetUnit()\l|
+    <SaveImage>+ SaveImage()\l|
+    + origin_:Vector3d\l|
+    + lookat_:Vector3d\l
+    + up_:Vector3d\l
+    + cross_:Vector3d\l
+    + fovy_:double\l
+    + width_:size_t\l
+    + height_:size_t\l
+    + len_per_pxl_:double\l
+    + image:Vector3d*\l}"];
+  ReadModel[label="{ReadModel}"];
+  Intersect[label="{Intersect\l|
+    \l|
+    <Object>+ obj_:Object\l|
+    + dst_:double\l|
+    <type_>+ type_:MtlType\l}"];
+  myNode[label="{<myNode>Node\l|
+    <GetBoundingBox>+ GetBoundingBox()\l|
+    + BBoxIntersection()\l|
+    + minB_:Vector3d\l
+    + maxB_:Vector3d\l
+    + obj_idx_:size_t\l|
+    <child_>+ child_[2]:Node*}"];
+    KdTree[label="{<KdTree>KdTree\l|
+      <build>+ build()\l|
+      <build_tree>+ build_tree()\l|
+      <RayTriangleIntersection>+ RayTriangleIntersection()\l|
+      <boxintersect>+ boxintersect()\l|
+      + nnSearch()\l
+      + ClearTree()\l|
+      <root_>+ root_:Node*\l}"];
+    Light[label="{<Light>Light\l|
+      <IsIntersect>+ IsIntersect()\l|
+      <IsShade>+ IsShade()\l|
+      <GetNorm>+ GetNorm()\l|
+      <GetRandomPointLight>+ GetRandomPointLight()\l|
+      <LightLe>+ LightLe()\l|
+      + GetRandomBeam()\l
+      + LightLe()\l}"];
+    ShpereLight[label="{SphereLight\l|
+      + radius_:double\l}"];
+    QuardLight[label="{QuardLight\l|
+      + width_:double\l
+      + height_:double\l
+      + cross_a_:Vector3d\l
+      + cross_b_:Vector3d\l}"];
+    Material[label="{<Material>Material\l|
+      + Kd_:Vector3d\l
+      + Ka_:Vector3d\l
+      + Ks_:Vector3d\l
+      + Ns_:double\l
+      + Ni_:double\l|
+      <type_>+ type_:MtlType\l}"];
+    Object[label="{Object\l|
+      <GetReflected>+ GetReflected()\l|
+      <GetReflectFactorDirOriginIt>+ GetReflectFactorDirOriginIt()\l|
+      <GetIntersect>+ GetIntersect()\l|
+      <GetRandomRay>+ GetRandomRay()\l|
+      <GetRefRay>+ GetRefRay()\l|
+      <GetReflectFactorDirOriginIt>+ GetReflectFactorDirOriginIt\l|
+      + norm_[3]:Vector3d\l
+      + center_[3]:Vector3d\l
+      + minB_:Vector3d\l
+      + maxB_:Vector3d\l|
+      <mtl_>+ mtl_\l}"];
+    MtlType[label="{<MtlType>MtlType}"];
+    Scene[label="{<Scene>Scene\l|
+      <LightIllumi>+ LightIllumi()\l|
+      <GetIntersect>+ GetIntersect()\l|
+      <GetNearestMtl>+ GetNearestMtl()\l|
+      <model_>+ model_\l|
+      <light_>+ light_\l|
+      <ray_tracing>+ ray_tracing()\l}"];
+    Beam[label="{Beam\l|
+      + origin_:Vector3d\l
+      + dir_:Vector3d\l
+      + color_:Vector3d\l}"];
+    Main[label="{Main}"];
+
+    Camera:get_view_beam -> Main[style=dashed];
+    Camera:add_pixel -> Main[style=dashed];
+    Camera:SaveImage -> Main[style=dashed];
+    Camera -> Main[style=dashed];
+    
+    ShpereLight -> Light[style=dashed, arrowhead=empty];
+    QuardLight -> Light[style=dashed, arrowhead=empty];
+    Material:type_ -> MtlType:MtlType[style=dashed];
+    Intersect:type_ -> MtlType:MtlType[style=dashed];
+    Object:mtl_ -> Material:Material[style=dashed];
+    Scene:GetNearestMtl -> KdTree[style=dashed];
+    Scene:LightIllumi -> KdTree[style=dashed];
+    Scene:LightIllumi -> Beam[style=dashed];
+    Scene:model_ -> ReadModel[style=dashed];
+    ReadModel -> Main[style=dashed];
+    Scene:light_ -> Main[style=dashed];
+    Scene:ray_tracing -> KdTree[style=dashed];
+    Scene:ray_tracing -> Main[style=dashed];
+    Scene:ray_tracing -> Scene:LightIllumi[style=dashed];
+    Scene:ray_tracing -> Scene:GetNearestMtl[style=dashed];
+    Scene:LightIllumi -> Light:GetRandomPointLight[style=dashed];
+    Scene:LightIllumi -> Light:LightLe[style=dashed];
+    Scene:LightIllumi -> Object:GetReflectFactorDirOriginIt[style=dashed];
+    myNode:child_ -> myNode:myNode[style=dashed];
+    KdTree:root_ -> myNode:myNode[style=dashed];
+    KdTree -> Scene:model_[style=dashed];
+}

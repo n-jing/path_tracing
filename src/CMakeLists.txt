@@ -1,0 +1,15 @@
+message(${CMAKE_CXX_FLAGS_RELEASE})
+find_package(OpenMP)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
+
+LINK_DIRECTORIES(../thirdparty/src)
+AUX_SOURCE_DIRECTORY(. render_src)
+ADD_LIBRARY(render ${render_src})
+ADD_EXECUTABLE(tMAIN main)
+TARGET_LINK_LIBRARIES(tMAIN render tiny)
+
+SET(EXECUTABLE_OUTPUT_PATH ../bin)
